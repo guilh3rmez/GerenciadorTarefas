@@ -11,6 +11,7 @@ app.use(express.json());
 // Liga o roteador à aplicação
 // Agora todas as rotas definidas no 'router' (como /tarefas) fazem parte do app.
 app.use(router);
+app.use(express.static('public'));
 
 // Exporta para o server.js ligar
 export default app;

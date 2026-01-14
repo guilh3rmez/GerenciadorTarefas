@@ -1,0 +1,38 @@
+        :root { --primary: #6c5ce7; --bg: #dfe6e9; --text: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding-top: 50px; }
+        
+        .container { width: 450px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 20px; }
+
+        /* Input Area */
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
+        select { padding: 10px; border-radius: 8px; border: 2px solid #eee; background: white; cursor: pointer; }
+        button#add-btn { padding: 12px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button#add-btn:hover { opacity: 0.9; transform: scale(1.05); }
+
+        /* Filters */
+        .filters { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .filter-btn { background: none; border: none; color: #b2bec3; font-weight: bold; cursor: pointer; }
+        .filter-btn.active { color: var(--primary); }
+
+        /* List */
+        ul { list-style: none; padding: 0; }
+        li { background: #f8f9fa; border-bottom: 1px solid #eee; padding: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; margin-bottom: 5px; border-radius: 5px; }
+        li:hover { transform: translateX(5px); background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        li.completed span { text-decoration: line-through; color: #b2bec3; }
+        
+        .actions { display: flex; gap: 10px; }
+        .btn-action { background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+        .btn-check { color: #00b894; }
+        .btn-delete { color: #d63031; }
+        .btn-edit { color: #0984e3; }
+
+        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; color: white; margin-right: 10px; vertical-align: middle; }
+        .tag-pessoal { background: #e17055; }
+        .tag-trabalho { background: #0984e3; }
+        .tag-estudos { background: #6c5ce7; }
+
+        .stats { text-align: right; font-size: 0.8rem; color: #b2bec3; margin-top: 10px; }
