@@ -29,7 +29,7 @@ class TarefaController {
 
     static atualizar = (req, res) => {
         const id = req.params.id;
-        const dados = req.body; // Aqui vem { concluida: true } ou { titulo: "Novo nome" }
+        const dados = req.body;
         
         const tarefaAtualizada = Tarefa.update(id, dados);
 
@@ -43,15 +43,10 @@ class TarefaController {
     static adicionar = (req, res) => {
         try {
             const tarefaCriada = req.body;
-            
-            // Chama a fábrica
             const tarefaSalva = Tarefa.create(tarefaCriada);
-
-            // Retorna 201 (Criado) e o JSON do objeto
             res.status(201).json(tarefaSalva);
 
         } catch (erro) {
-            // Se algo explodir, cai aqui (Erro 500 = Erro do Servidor)
             res.status(500).json({ message: `${erro.message} - Falha ao cadastrar tarefa.` });
         }
     }
