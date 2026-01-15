@@ -1,5 +1,4 @@
 import express from "express";
-// Importa o roteador que criamos (tarefasRouter.js)
 import router from "./routes/tarefasRouter.js";
 
 // Cria a aplicação

@@ -1,4 +1,4 @@
-import Tarefa from "../models/Tarefa.js"; // Garanta que o nome do arquivo bate com o import!
+import Tarefa from "../models/Tarefa.js";
 
 class TarefaController {
 

@@ -1,4 +1,3 @@
-// public/app.js
 
 // 1. ESTADO GLOBAL
 // Guardamos a lista completa aqui para não perder dados ao filtrar
