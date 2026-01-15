@@ -1,111 +1,155 @@
 // public/app.js
 
+// 1. ESTADO GLOBAL
+// Guardamos a lista completa aqui para não perder dados ao filtrar
+let listaGlobal = []; 
+let filtroAtual = 'todas'; // 'todas', 'pendentes' ou 'concluidas'
+
 // ================================================================
-// MISSÃO 1: BUSCAR TAREFAS (GET)
+// BUSCAR (GET)
 // ================================================================
 async function buscarTarefas() {
     try {
-        // Faz a chamada para o nosso Back-end na rota '/tarefas'
         const response = await fetch('/tarefas');
-
-        // Verifica se a resposta foi OK (Status 200-299)
-        if (!response.ok) {
-            throw new Error(`Erro HTTP! Status: ${response.status}`);
-        }
-
-        // Converte a resposta (que vem como texto) para JSON (Objeto JS)
         const data = await response.json();
 
-        // Chama a função de desenhar na tela passando a lista recebida
-        renderizarTarefa(data);
+        // Salva na memória global antes de qualquer coisa
+        listaGlobal = data;
+
+        // Manda desenhar (respeitando o filtro que estiver ativo)
+        atualizarTela();
 
     } catch (error) {
-        console.error('Houve um problema com as tarefas', error);
+        console.error('Erro:', error);
     }
 }
 
 // ================================================================
-// MISSÃO 2: RENDERIZAR NA TELA (DOM)
+// LÓGICA DE FILTRO E RENDERIZAÇÃO
 // ================================================================
-function renderizarTarefa(lista) {
-    // 1. Seleciona a lista UL do HTML
-    const ul = document.getElementById('task-list');
+
+// Função chamada pelos botões de filtro no HTML
+function filtrar(tipo) {
+    filtroAtual = tipo; // Atualiza o estado ('todas', 'pendentes'...)
     
-    // 2. Limpa o HTML atual para não duplicar itens ao atualizar
+    // Atualiza visual dos botões (para ficar roxinho o ativo)
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // O truque: procura o botão que foi clicado baseando-se no texto ou onclick
+    // Mas para facilitar, vamos assumir que o CSS resolve o .active se gerarmos via JS,
+    // ou simplificamos buscando pelo texto do botão.
+    // Vamos fazer o jeito simples:
+    if(tipo === 'todas') document.querySelector('button[onclick="filtrar(\'todas\')"]').classList.add('active');
+    if(tipo === 'pendentes') document.querySelector('button[onclick="filtrar(\'pendentes\')"]').classList.add('active');
+    if(tipo === 'concluidas') document.querySelector('button[onclick="filtrar(\'concluidas\')"]').classList.add('active');
+
+    // Redesenha a lista
+    atualizarTela();
+}
+
+// Função que prepara os dados para serem desenhados
+function atualizarTela() {
+    // 1. Aplica o Filtro na lista global
+    let listaFiltrada = listaGlobal;
+
+    if (filtroAtual === 'pendentes') {
+        listaFiltrada = listaGlobal.filter(t => !t.concluida);
+    } else if (filtroAtual === 'concluidas') {
+        listaFiltrada = listaGlobal.filter(t => t.concluida);
+    }
+
+    // 2. Atualiza o Contador de Pendentes (Sempre conta da lista global, independente do filtro visual)
+    const pendentesCount = listaGlobal.filter(t => !t.concluida).length;
+    document.getElementById('count-pending').innerText = pendentesCount;
+
+    // 3. Chama o desenhista
+    renderizarHTML(listaFiltrada);
+}
+
+// O antigo "renderizarTarefa" agora só se preocupa com HTML
+function renderizarHTML(lista) {
+    const ul = document.getElementById('task-list');
     ul.innerHTML = ''; 
 
-    // 3. Percorre cada tarefa da lista recebida
     lista.forEach(tarefa => {
-        
-        // Cria o HTML dinâmico usando Template Strings (crase)
         const htmlDaTarefa = `
             <li class="${tarefa.concluida ? 'completed' : ''}">
                 <div>
                     <span class="tag tag-${tarefa.categoria}">${tarefa.categoria}</span>
                     <span>${tarefa.titulo}</span>
                 </div>
-
                 <div class="actions">
-                    <button class="btn-action btn-check" onclick="concluirTarefa(${tarefa.id})">✔</button>
-                    <button class="btn-action btn-edit">✎</button>
+                    <button class="btn-action btn-check" onclick="concluirTarefa(${tarefa.id}, ${tarefa.concluida})">✔</button>
+                    <button class="btn-action btn-edit" onclick="editarTarefa(${tarefa.id}, '${tarefa.titulo}')">✎</button>
                     <button class="btn-action btn-delete" onclick="deletarTarefa(${tarefa.id})">✖</button>
                 </div>
             </li>
         `;
-
-        // Injeta o novo HTML dentro da UL
         ul.innerHTML += htmlDaTarefa;
     });
 }
 
 // ================================================================
-// MISSÃO 3: ADICIONAR NOVA TAREFA (POST)
+// AÇÕES (POST, PUT, DELETE)
 // ================================================================
-// Atenção: O nome da função deve ser igual ao do 'onclick' no HTML (singular)
+
 async function adicionarTarefa() {
-    // 1. Captura os elementos do HTML
     const inputTitulo = document.getElementById("task-input");
     const inputCategoria = document.getElementById("task-category");
 
-    // 2. Extrai os valores digitados
-    const valorTitulo = inputTitulo.value;
-    const valorCategoria = inputCategoria.value;
+    if (!inputTitulo.value) return alert("Digite uma tarefa!");
 
-    // Validação simples: não deixa criar tarefa vazia
-    if (!valorTitulo) return alert("Digite uma tarefa!");
-
-    // 3. Monta o objeto que será enviado para a API
     const novaTarefa = {
-        titulo: valorTitulo,
-        categoria: valorCategoria
+        titulo: inputTitulo.value,
+        categoria: inputCategoria.value
     };
 
     try {
-        // 4. Faz o envio (POST) para o servidor
-        const response = await fetch('/tarefas', {
+        await fetch('/tarefas', {
             method: "POST", 
-            headers: {
-                "Content-Type": "application/json" // Avisa o back-end que estamos mandando JSON
-            },
-            body: JSON.stringify(novaTarefa) // Converte o objeto JS para String
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(novaTarefa)
         });
-
-        // 5. Se o servidor aceitou (Status 201 Created)
-        if (response.ok) {
-            // Limpa o campo de texto para o usuário digitar a próxima
-            inputTitulo.value = "";
-            
-            // PULO DO GATO: Chama a busca novamente para atualizar a lista na tela!
-            buscarTarefas();
-        }
-
+        
+        inputTitulo.value = "";
+        buscarTarefas(); // Recarrega tudo
     } catch (erro) {
-        console.error("Erro ao adicionar:", erro);
+        console.error("Erro:", erro);
     }
 }
 
-// ================================================================
-// INICIALIZAÇÃO
-// ================================================================
-// Chama a função de busca assim que o arquivo carrega para mostrar o que já tem no banco
+async function deletarTarefa(id) {
+    if(!confirm("Tem certeza?")) return;
+    try {
+        await fetch(`/tarefas/${id}`, { method: "DELETE" });
+        buscarTarefas();
+    } catch (erro) { console.error(erro); }
+}
+
+async function concluirTarefa(id, statusAtual) {
+    try {
+        await fetch(`/tarefas/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ concluida: !statusAtual })
+        });
+        buscarTarefas();
+    } catch (erro) { console.error(erro); }
+}
+
+async function editarTarefa(id, tituloAtual) {
+    const novoTitulo = prompt("Novo nome:", tituloAtual);
+    if (!novoTitulo || novoTitulo === tituloAtual) return;
+
+    try {
+        await fetch(`/tarefas/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ titulo: novoTitulo })
+        });
+        buscarTarefas();
+    } catch (erro) { console.error(erro); }
+}
+
+// Start
 buscarTarefas();

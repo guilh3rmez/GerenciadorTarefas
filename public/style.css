@@ -1,38 +1,245 @@
-        :root { --primary: #6c5ce7; --bg: #dfe6e9; --text: #2d3436; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding-top: 50px; }
-        
-        .container { width: 450px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 20px; }
+/* Fonte Poppins continua, é excelente para leitura */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-        /* Input Area */
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
-        select { padding: 10px; border-radius: 8px; border: 2px solid #eee; background: white; cursor: pointer; }
-        button#add-btn { padding: 12px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button#add-btn:hover { opacity: 0.9; transform: scale(1.05); }
+:root {
+    /* Cores Sólidas e Vibrantes (Sem gradientes pálidos) */
+    --primary: #6c5ce7;       /* Roxo vibrante */
+    --primary-dark: #5040b2;  /* Roxo escuro para hover */
+    --accent: #00cec9;        /* Ciano para detalhes */
+    
+    /* Fundo neutro para destacar o conteúdo */
+    --bg-body: #f0f2f5;       
+    --bg-card: #ffffff;
+    
+    /* Texto de alto contraste */
+    --text-main: #1e272e;     /* Quase preto (muito nítido) */
+    --text-secondary: #808e9b;
+    
+    /* Sombras mais curtas e definidas */
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.12);
+    
+    /* Status */
+    --success: #00b894;
+    --danger: #d63031;
+    --warning: #fdcb6e;
+}
 
-        /* Filters */
-        .filters { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .filter-btn { background: none; border: none; color: #b2bec3; font-weight: bold; cursor: pointer; }
-        .filter-btn.active { color: var(--primary); }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* O SEGREDO DA NITIDEZ: Renderização de fonte melhorada */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
-        /* List */
-        ul { list-style: none; padding: 0; }
-        li { background: #f8f9fa; border-bottom: 1px solid #eee; padding: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; margin-bottom: 5px; border-radius: 5px; }
-        li:hover { transform: translateX(5px); background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        
-        li.completed span { text-decoration: line-through; color: #b2bec3; }
-        
-        .actions { display: flex; gap: 10px; }
-        .btn-action { background: none; border: none; cursor: pointer; font-size: 1.1rem; }
-        .btn-check { color: #00b894; }
-        .btn-delete { color: #d63031; }
-        .btn-edit { color: #0984e3; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 60px 20px;
+}
 
-        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; color: white; margin-right: 10px; vertical-align: middle; }
-        .tag-pessoal { background: #e17055; }
-        .tag-trabalho { background: #0984e3; }
-        .tag-estudos { background: #6c5ce7; }
+.container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--bg-card);
+    padding: 35px;
+    border-radius: 16px; /* Menos arredondado que antes = mais sério */
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0,0,0,0.03); /* Borda sutil para definição */
+}
 
-        .stats { text-align: right; font-size: 0.8rem; color: #b2bec3; margin-top: 10px; }
+h1 {
+    text-align: center;
+    color: var(--primary);
+    font-weight: 700; /* Extra bold */
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px; /* Letras mais juntinhas */
+}
+
+/* Input Area */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+input, select {
+    padding: 12px 16px;
+    border: 2px solid #dfe6e9; /* Borda cinza clara */
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    background: #fff;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+input { flex: 1; }
+
+/* Foco Nítido: Borda colorida sólida */
+input:focus, select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+button#add-btn {
+    padding: 0 20px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    line-height: 1;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(108, 92, 231, 0.3);
+}
+
+button#add-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+button#add-btn:active {
+    transform: translateY(0);
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f2f6; /* Linha divisória mais grossa */
+}
+
+.filter-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.filter-btn:hover {
+    color: var(--primary);
+    background: #f1f2f6;
+}
+
+.filter-btn.active {
+    color: white;
+    background-color: var(--primary); /* Botão ativo sólido */
+    box-shadow: 0 2px 5px rgba(108, 92, 231, 0.3);
+}
+
+/* List */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: white;
+    /* Borda sólida em volta de cada tarefa */
+    border: 1px solid #dfe6e9; 
+    border-left: 5px solid transparent; /* Preparando para a cor da categoria */
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+li:hover {
+    border-color: var(--primary); /* Borda fica roxa ao passar o mouse */
+    transform: translateX(4px);
+    box-shadow: var(--shadow-card);
+}
+
+li.completed {
+    background-color: #f8f9fa;
+    border-color: #f1f2f6;
+    opacity: 0.6;
+}
+
+li.completed span:not(.tag) {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+/* Tags Sólidas e Nítidas (Sem gradiente) */
+.tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px; /* Mais quadrado */
+    color: white;
+    margin-right: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Definindo a cor da borda esquerda baseada na tag também seria legal, 
+   mas vamos manter simples nas tags */
+.tag-pessoal { background-color: #e17055; }
+.tag-trabalho { background-color: #0984e3; }
+.tag-estudos { background-color: #6c5ce7; }
+
+/* Actions */
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-action {
+    background: #f1f2f6; /* Botões agora têm fundo bolinha */
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px; /* Quadrado arredondado */
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    color: var(--text-secondary);
+}
+
+.btn-check:hover { background: var(--success); color: white; }
+.btn-edit:hover { background: var(--primary); color: white; }
+.btn-delete:hover { background: var(--danger); color: white; }
+
+.stats {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    font-weight: 600;
+    border-top: 2px solid #f1f2f6;
+    padding-top: 15px;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .input-group { flex-direction: column; }
+    button#add-btn { width: 100%; padding: 12px; }
+}
